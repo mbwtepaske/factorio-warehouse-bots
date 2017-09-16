@@ -1,0 +1,9 @@
+{
+  "name": "warehouse-bots",
+  "version": "0.15.1",
+  "factorio_version": "0.15",
+  "title": "Warehouse Bots",
+  "author": "Drakomir",
+  "description": "",
+  "dependencies": ["base >= 0.15.0", "data-raw-prototypes >= 0.3.1"]
+}
