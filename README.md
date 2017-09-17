@@ -1,7 +1,7 @@
 # Factorio Warehouse Bots
 A factorio modification introducing warehouse bots.
 
-Factorio has flying logistic bots and transport-belts & inserter for small-scale logistics and trains for large-scale logistics, warehous-bots fulfill a medium-scale logistical role.
+Factorio has flying logistic bots and transport-belts & inserter for small-scale logistics and trains for large-scale logistics, warehouse-bots are suppose to fulfill a medium-scale logistical role.
 
 The idea is to have tiles direct the warehouse-bots, which are car-prototypes that will occupy the grid 1x1. 
 
