@@ -1,59 +1,82 @@
 require("stdlib.table")
 
+local function get_direction_tile_sprite(offsetX, offsetY)
+  return 
+  {
+    frame_count = 1,
+    filename    = modification .. "graphics/entities/warehouse-direction-tile.png",
+    x           = offsetX or 0,
+    y           = offsetY or 0,
+    width       = 32,
+    height      = 32,
+    shift       = {0 , 0}
+  }
+end
+
+local empty_sprite =
+{
+  priority        = "extra-high";
+  filename        = "__core__/graphics/empty.png";
+  direction_count = 1;
+  frame_count     = 1;
+  width           = 1;
+  height          = 1;
+}
+
 data:extend
 {
   table.merge(table.deepcopy(data.raw["constant-combinator"]["constant-combinator"]),
   {
-    name = "warehouse-direction-tile",
-    icon = modification .. "graphics/icons/warehouse-direction-tile.png",
-    collision_mask = { "floor-layer" },
-    minable = { hardness = 0.2, mining_time = 0.5, result = "warehouse-direction-tile" },
-    max_health = 100,
+    name            = "warehouse-direction-tile",
+    icon            = modification .. "graphics/icons/warehouse-direction-tile.png";
+    collision_mask  = { "floor-layer" };    
+    minable         = nil; --{ hardness = 0.2, mining_time = 0.5, result = "warehouse-direction-tile" },
+    max_health      = 100,
     item_slot_count = 0,
-    sprites =
+    sprites         =
     {
-      north =
-      {
-        frame_count = 1,
-        filename    = modification .. "graphics/entities/warehouse-direction-tile.png",
-        x       = 0,
-        y       = 0,
-        width   = 32,
-        height  = 32,
-        shift   = {0 , 0}
-      },
-      east =
-      {
-        frame_count = 1,
-        filename    = modification .. "graphics/entities/warehouse-direction-tile.png",
-        x       = 96,
-        y       = 0,
-        width   = 32,
-        height  = 32,
-        shift   = {0 , 0}
-      },
-      south =
-      {
-        frame_count = 1,
-        filename    = modification .. "graphics/entities/warehouse-direction-tile.png",
-        x       = 32,
-        y       = 0,
-        width   = 32,
-        height  = 32,
-        shift   = {0 , 0}
-      },
-      west =
-      {
-        frame_count = 1,
-        filename    = modification .. "graphics/entities/warehouse-direction-tile.png",
-        x       = 64,
-        y       = 0,
-        width   = 32,
-        height  = 32,
-        shift   = {0 , 0}
-      }
-    },
-  }),
+      north = get_direction_tile_sprite( 0);
+      east  = get_direction_tile_sprite(96);
+      south = get_direction_tile_sprite(32);
+      west  = get_direction_tile_sprite(64);
+    };
+    fast_replaceable_group = "warehouse-tile"
+  });
+  table.merge(table.deepcopy(data.raw["constant-combinator"]["constant-combinator"]),
+  {
+    name            = "warehouse-direction-tile-ghost",
+    icon            = modification .. "graphics/icons/warehouse-direction-tile.png";
+    collision_mask  = { "floor-layer" };
+    render_layer    = "floor";
+    minable         = { hardness = 0.2, mining_time = 0.5, result = "warehouse-direction-tile" },
+    max_health      = 100,
+    item_slot_count = 0,
+    sprites         =
+    {
+      north = empty_sprite;
+      east  = empty_sprite;
+      south = empty_sprite;
+      west  = empty_sprite;
+    };
+    fast_replaceable_group = "warehouse-tile"
+  });
+  --table.merge(table.deepcopy(data.raw["storage-tank"]["storage-tank"]),
+  --{
+  --  name            = "warehouse-direction-tile-2",
+  --  icon            = modification .. "graphics/icons/warehouse-direction-tile.png";
+  --  collision_mask  = { "floor-layer" };    
+  --  minable         = nil; --{ hardness = 0.2, mining_time = 0.5, result = "warehouse-direction-tile" },
+  --  max_health      = 100,
+  --  item_slot_count = 0,
+  --  sprites         =
+  --  {
+  --    north = get_direction_tile_sprite( 0);
+  --    east  = get_direction_tile_sprite(96);
+  --    south = get_direction_tile_sprite(32);
+  --    west  = get_direction_tile_sprite(64);
+  --  };
+  --  fast_replaceable_group = "warehouse-tile"
+  --});
 	table.merge(table.deepcopy(data.raw["car"]["car"]),
   {
 		name            = "warehouse-bot";
@@ -78,32 +101,25 @@ data:extend
 		light           =
     {	
       {
-        color = {r = 0.7, g = 0.7, b = 1.0},
-        intensity = 0,
-        size = 1,
+        color = {r = 0.7, g = 0.7, b = 1.0};
+        intensity = 0;
+        size = 1;
       }
-    },
+    };
 		animation =
     {
 			layers =
       {
         {
-          priority        = "low",
-          width           = 48,
-          height          = 48,
-          frame_count     = 1,
-          direction_count = 64,
-          animation_speed = 8,
-          shift           = {0, 0},
-          max_advance     = 1,
-          stripes =
-          {
-            {
-             filename = modification .. "graphics/entities/arrow.png",
-             width_in_frames  = 8,
-             height_in_frames = 8,
-            }
-          }
+          filename        = modification .. "graphics/entities/arrow.png";
+          priority        = "high";
+          animation_speed = 8;
+          direction_count = 64;
+          frame_count     = 1;
+          line_length     = 8;
+          width           = 48;
+          height          = 48;
+          shift           = {0, 0};
         }
 			}
 		};
@@ -120,28 +136,12 @@ data:extend
 				}
 			}
 		};
-    turret_animation = 
-    {
-      layers =
-      {
-        {
-          filename        = "__base__/graphics/entity/car/car-turret.png",
-          priority        = "low",
-          animation_speed = 8;
-          line_length     = 8,
-          width           = 36,
-          height          = 29,
-          frame_count     = 1,
-          direction_count = 0,
-          shift           = { 0, 0 },
-        }
-      }
-    };
+    turret_animation = { layers = { empty_sprite } };
     working_sound =
     { 
       sound             = { volume = 0; filename = "__base__/sound/car-engine.ogg" };
       activate_sound    = { volume = 0; filename = "__base__/sound/car-engine-start.ogg" };
       deactivate_sound  = { volume = 0; filename = "__base__/sound/car-engine-stop.ogg" };
-    },
-	})
+    };
+	});
 }

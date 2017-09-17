@@ -1,9 +1,26 @@
 local Time = require("stdlib.time")
 
-local Bot = {}
+local Bot = 
+{
+  Mode = 
+  {
+    Waiting     = 0;
+    Following   = 1;
+    Acting      = 2;
+  };
+  ActingMode    =
+  {
+    DropOff     = 1;
+    PickUp      = 2;
+  };
+  WaitingMode   = 
+  {
+    Order       = 0;
+    Recharge    = 1;
+  };
+}
 
-function Bot.Create(entity) 
-
+function Bot.Create(entity)
   local bot = 
   {
     Entity      = entity;

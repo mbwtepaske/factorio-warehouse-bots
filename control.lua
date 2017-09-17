@@ -9,49 +9,86 @@ function OnConfigurationChanged()
   OnInitialize()
 end
 
-function OnBuild(item)
-	local entity = item.created_entity
-	
-	if entity.type == "car" and entity.name == "warehouse-bot" then       
-    game.print("Build: " .. entity.unit_number)
-    
+script.on_configuration_changed(OnConfigurationChanged)
+
+function OnBuildEntity(entity, instigator)	
+	if entity.type == "car" and entity.name == "warehouse-bot" then
     global.BotList[entity.unit_number] = Bot.Create(entity)    
 	end
   
-  if entity.name == "warehouse-direction-tile" then
-    for direction, v in pairs(defines.direction) do
-      if v == entity.direction then
-        game.print("Build: " .. direction)
-      end
-    end
+  if entity.name == "warehouse-direction-tile" or entity.name == "warehouse-direction-tile-ghost" then
+    local entity = entity.surface.create_entity
+    { 
+      name          = "warehouse-direction-tile-ghost";
+      direction     = entity.direction;
+      fast_replace  = true;
+      force         = "player";
+      position      = entity.position;
+      operable      = false;
+      spill         = false;
+    }
     
-    for direction, value in pairs(defines.direction) do
-      if value == entity.direction then
-        entity.surface.set_tiles({ { name = "warehouse-direction-tile-" .. direction, position = entity.position } }, false)    
-        break        
-      end
-    end
-    
-    entity.destroy()    
+    entity.operable = false    
+    entity.surface.set_tiles(
+    {
+      { 
+        name = "warehouse-direction-tile-" .. string.lower(game.direction_to_string(entity.direction));
+        position = entity.position;
+      } 
+    }, false)
   end
 end
 
-function OnDestroy(item)
-	local entity = item.entity
-	
-	if entity.type == "car" and entity.name == "warehouse-bot" then
-    game.print("Destroy: " .. entity.unit_number)
-    
-    global.BotList[entity.unit_number] = nil
-	end
+script.on_event(defines.events.on_built_entity, function(event) OnBuildEntity(event.created_entity, game.players[event.player_index]) end)
+script.on_event(defines.events.on_robot_built_entity, function(event) OnBuildEntity(event.created_entity, event.robot) end)
+
+function OnBuildTile(positions, instigator)
+  
 end
 
-function OnInitialize()
-	global.BotList = global.BotList or {}  
+function OnDestroyEntity(entity, instigator)
+	if entity.type == "car" and entity.name == "warehouse-bot" then
+    global.BotList[entity.unit_number] = nil
+	end
+  
+  if entity.name == "warehouse-direction-tile-ghost" then
+    instigator.mine_tile(entity.surface.get_tile(entity.position.x, entity.position.y))
+  end
 end
+
+script.on_event(defines.events.on_entity_died, function(event) OnDestroyEntity(event.entity, event.cause or event.last_user) end)
+script.on_event(defines.events.on_preplayer_mined_item, function(event) OnDestroyEntity(event.entity, game.players[event.player_index]) end)
+script.on_event(defines.events.on_robot_pre_mined, function(event) OnDestroyEntity(event.entity, event.robot) end)
+
+function OnRotateEntity(entity, instigator)
+  if entity.name == "warehouse-direction-tile-ghost" then
+    entity.surface.set_tiles(
+    {
+      { 
+        name = "warehouse-direction-tile-" .. string.lower(game.direction_to_string(entity.direction));
+        position = entity.position;
+      } 
+    }, false)
+  end
+end
+
+script.on_event(defines.events.on_player_rotated_entity, function(event) OnRotateEntity(event.entity, game.players[event.player_index]) end)
+
+script.on_event(defines.events.on_pre_entity_settings_pasted, function(event)
+  game.print(Inspect(event))
+end)
+
+function OnInitialize()
+	global.BotList = global.BotList or {}
+  global.Tiles = globalTiles or {}
+end
+
+script.on_init(OnInitialize)
 
 function OnLoad()
 end
+
+script.on_load(OnLoad)
 
 function OnTick()
 	if global.BotList then
@@ -64,15 +101,9 @@ function OnTick()
 	end
 end
 
---function OnParade()
---  for index, bot in pairs(global.BotList) do
---    --bot.Entity.speed = bot.Entity.speed + 0.01
---  end
---end
+script.on_event(defines.events.on_tick, OnTick)
 
-script.on_event("bot-readout", function(event)
-  game.print(Inspect(event))
-  
+script.on_event("bot-readout", function(event)  
   if global.BotList then
     for key, bot in pairs(global.BotList) do
       Bot.Readout(bot)
@@ -80,17 +111,13 @@ script.on_event("bot-readout", function(event)
 	end
 end)
 
+--function OnParade()
+--  for index, bot in pairs(global.BotList) do
+--    --bot.Entity.speed = bot.Entity.speed + 0.01
+--  end
+--end
 
-script.on_init(OnInitialize)
-script.on_load(OnLoad)
-script.on_configuration_changed(OnConfigurationChanged)
-script.on_event(defines.events.on_built_entity, OnBuild)
-script.on_event(defines.events.on_robot_built_entity, OnBuild)
 --script.on_event(defines.events.on_console_command, OnCommand)
-script.on_event(defines.events.on_preplayer_mined_item, OnDestroy)
-script.on_event(defines.events.on_robot_pre_mined, OnDestroy)
-script.on_event(defines.events.on_entity_died, OnDestroy)
-script.on_event(defines.events.on_tick, OnTick)
 remote.add_interface("WarehouseBots", 
 {
   --Parade = OnParade
