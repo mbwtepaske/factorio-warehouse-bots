@@ -1,6 +1,7 @@
-local Bot = require("bot")
+local Area    = require("stdlib.area.area")
+local Bot     = require("bot")
 local Inspect = require("inspect")
-local Time = require("stdlib.time")
+local Time    = require("stdlib.time")
 
 function OnCommand(player, command, parameters)  
 end
@@ -11,13 +12,31 @@ end
 
 script.on_configuration_changed(OnConfigurationChanged)
 
+function PlaceWarehouseTile(entity, instigator)
+  local tile = instigator.surface.get_tile(entity.position)
+  
+  if tile then
+    instigator.mine_tile(tile)
+  end
+  
+  instigator.surface.set_tiles(
+  { 
+    { 
+      name = "warehouse-direction-tile-" .. string.lower(game.direction_to_string(entity.direction));
+      position = entity.position
+    }
+  }, true)
+end
+
 function OnBuildEntity(entity, instigator)	
 	if entity.type == "car" and entity.name == "warehouse-bot" then
     global.BotList[entity.unit_number] = Bot.Create(entity)    
 	end
   
   if entity.name == "warehouse-direction-tile" or entity.name == "warehouse-direction-tile-ghost" then
-    local entity = entity.surface.create_entity
+    local old_entity = entity
+    
+    entity = entity.surface.create_entity
     { 
       name          = "warehouse-direction-tile-ghost";
       direction     = entity.direction;
@@ -27,24 +46,52 @@ function OnBuildEntity(entity, instigator)
       operable      = false;
       spill         = false;
     }
+    entity.operable = false
     
-    entity.operable = false    
-    entity.surface.set_tiles(
-    {
-      { 
-        name = "warehouse-direction-tile-" .. string.lower(game.direction_to_string(entity.direction));
-        position = entity.position;
-      } 
-    }, false)
+    old_entity.destroy()
+    
+    PlaceWarehouseTile(entity, instigator)
   end
 end
 
 script.on_event(defines.events.on_built_entity, function(event) OnBuildEntity(event.created_entity, game.players[event.player_index]) end)
 script.on_event(defines.events.on_robot_built_entity, function(event) OnBuildEntity(event.created_entity, event.robot) end)
 
-function OnBuildTile(positions, instigator)
+function OnBuildTile(positions, instigator)  
+  local area = 
+  { 
+    left_top = 
+    { 
+      x = positions[1].x;
+      y = positions[1].y;
+    };
+    right_bottom =
+    {
+      x = positions[1].x;
+      y = positions[1].y;
+    };
+  }
   
+  for index, position in ipairs(positions) do
+    area.left_top.x = math.min(area.left_top.x, position.x - 0)
+    area.left_top.y = math.min(area.left_top.y, position.y - 0)
+    area.right_bottom.x = math.max(area.right_bottom.x, position.x + 1)
+    area.right_bottom.y = math.max(area.right_bottom.y, position.y + 1)
+  end
+  
+  game.print(string.format("OnBuildTile: %s (%f)", Inspect(area), Area.area(area)))
+  
+  for index, entity in ipairs(instigator.surface.find_entities(area)) do    
+    game.print(string.format("OnBuildTile: [%i] = %s (%s)", index, Inspect(position), Inspect(entity.type)))
+    
+    if entity.name == "warehouse-direction-tile" then
+      PlaceWarehouseTile(entity, instigator)
+    end
+  end 
 end
+
+script.on_event(defines.events.on_player_built_tile, function(event) OnBuildTile(event.positions, game.players[event.player_index]) end)
+script.on_event(defines.events.on_robot_built_tile, function(event) OnBuildTile(event.positions, event.robot) end)
 
 function OnDestroyEntity(entity, instigator)
 	if entity.type == "car" and entity.name == "warehouse-bot" then

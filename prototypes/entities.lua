@@ -3,12 +3,12 @@ require("stdlib.table")
 local function get_direction_tile_sprite(offsetX, offsetY)
   return 
   {
-    frame_count = 1,
-    filename    = modification .. "graphics/entities/warehouse-direction-tile.png",
-    x           = offsetX or 0,
-    y           = offsetY or 0,
-    width       = 32,
-    height      = 32,
+    frame_count = 1;
+    filename    = modification .. "graphics/entities/warehouse-direction-tile.png";
+    x           = offsetX or 0;
+    y           = offsetY or 0;
+    width       = 32;
+    height      = 32;
     shift       = {0 , 0}
   }
 end
@@ -27,12 +27,12 @@ data:extend
 {
   table.merge(table.deepcopy(data.raw["constant-combinator"]["constant-combinator"]),
   {
-    name            = "warehouse-direction-tile",
+    name            = "warehouse-direction-tile";
     icon            = modification .. "graphics/icons/warehouse-direction-tile.png";
     collision_mask  = { "floor-layer" };    
     minable         = nil; --{ hardness = 0.2, mining_time = 0.5, result = "warehouse-direction-tile" },
-    max_health      = 100,
-    item_slot_count = 0,
+    max_health      = 100;
+    item_slot_count = 0;
     sprites         =
     {
       north = get_direction_tile_sprite( 0);
@@ -40,17 +40,16 @@ data:extend
       south = get_direction_tile_sprite(32);
       west  = get_direction_tile_sprite(64);
     };
-    fast_replaceable_group = "warehouse-tile"
+    --fast_replaceable_group = "warehouse-tile"
   });
   table.merge(table.deepcopy(data.raw["constant-combinator"]["constant-combinator"]),
   {
-    name            = "warehouse-direction-tile-ghost",
+    name            = "warehouse-direction-tile-ghost";
     icon            = modification .. "graphics/icons/warehouse-direction-tile.png";
     collision_mask  = { "floor-layer" };
-    render_layer    = "floor";
-    minable         = { hardness = 0.2, mining_time = 0.5, result = "warehouse-direction-tile" },
-    max_health      = 100,
-    item_slot_count = 0,
+    minable         = { hardness = 0.2, mining_time = 0.5, result = "warehouse-direction-tile" };
+    max_health      = 100;
+    item_slot_count = 0;
     sprites         =
     {
       north = empty_sprite;
@@ -58,25 +57,8 @@ data:extend
       south = empty_sprite;
       west  = empty_sprite;
     };
-    fast_replaceable_group = "warehouse-tile"
+    --fast_replaceable_group = "warehouse-tile"
   });
-  --table.merge(table.deepcopy(data.raw["storage-tank"]["storage-tank"]),
-  --{
-  --  name            = "warehouse-direction-tile-2",
-  --  icon            = modification .. "graphics/icons/warehouse-direction-tile.png";
-  --  collision_mask  = { "floor-layer" };    
-  --  minable         = nil; --{ hardness = 0.2, mining_time = 0.5, result = "warehouse-direction-tile" },
-  --  max_health      = 100,
-  --  item_slot_count = 0,
-  --  sprites         =
-  --  {
-  --    north = get_direction_tile_sprite( 0);
-  --    east  = get_direction_tile_sprite(96);
-  --    south = get_direction_tile_sprite(32);
-  --    west  = get_direction_tile_sprite(64);
-  --  };
-  --  fast_replaceable_group = "warehouse-tile"
-  --});
 	table.merge(table.deepcopy(data.raw["car"]["car"]),
   {
 		name            = "warehouse-bot";
