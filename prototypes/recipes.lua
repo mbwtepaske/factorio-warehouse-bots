@@ -15,5 +15,6 @@ end
 data:extend
 {
   create_recipe("warehouse-bot");
+  create_recipe("warehouse-bot-battery");
   create_recipe("warehouse-direction-tile");
 }

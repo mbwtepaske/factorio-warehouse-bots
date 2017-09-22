@@ -64,7 +64,7 @@ data:extend
 		name            = "warehouse-bot";
 		icon            = "__base__/graphics/icons/wooden-chest.png";
     flags           = { "placeable-neutral", "player-creation" };
-		inventory_size  = 0;
+		inventory_size  = 2;
 		max_health      = 100;
 		minable         = { mining_time = 1, result = "warehouse-bot" };
 		corpse          = "small-remnants";
@@ -72,12 +72,12 @@ data:extend
 		collision_box   = { {-0.25, -0.25}, {0.25, 0.25} };
 		selection_box   = { {-0.50, -0.50}, {0.50, 0.50} };
 		effectivity     = 1;
-		consumption     = "1kW";
-		braking_power   = "50kW";
+		consumption     = 10 .. "KW";
+		braking_power   = 50 .. "KW";
 		friction        = 2E-3;
 		rotation_speed  = 1 / 60.0;
 		weight          = 10;
-		burner          = { effectivity = 1,	fuel_inventory_size = 0, };
+		burner          = { effectivity = 1;	fuel_inventory_size = 0; };
     tank_driving    = true; -- allow turning while standing still
     guns            = {};
 		light           =
@@ -125,5 +125,7 @@ data:extend
       activate_sound    = { volume = 0; filename = "__base__/sound/car-engine-start.ogg" };
       deactivate_sound  = { volume = 0; filename = "__base__/sound/car-engine-stop.ogg" };
     };
+    equipment_grid        = "warehouse-bot-grid";
+    equipment_categories  = { "warehouse-bot-equipment" };
 	});
 }
