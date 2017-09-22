@@ -72,14 +72,28 @@ data:extend
 		collision_box   = { {-0.25, -0.25}, {0.25, 0.25} };
 		selection_box   = { {-0.50, -0.50}, {0.50, 0.50} };
 		effectivity     = 1;
-		consumption     = 10 .. "KW";
-		braking_power   = 50 .. "KW";
+		consumption     =  9 .. "KW";
+		braking_power   = 18 .. "KW";
 		friction        = 2E-3;
+    render_layer    = "higher-object-above";
 		rotation_speed  = 1 / 60.0;
-		weight          = 10;
-		burner          = { effectivity = 1;	fuel_inventory_size = 0; };
+		weight          = 50;
     tank_driving    = true; -- allow turning while standing still
     guns            = {};
+		burner          = 
+    { 
+      --type                      = "electric";
+      --buffer_capacity           = 18 .. "MJ";
+      --input_flow_limit          = 10 .. "KW";
+      --output_flow_limit         = 10 .. "KW";
+      --effectivity               = 1;
+      emissions                 = 0;
+      fuel_inventory_size       = 0;
+      render_no_power_icon      = true;
+      render_no_network_icon    = false;
+      resting_consumption_ratio = 0;
+      --usage_priority            = "primary-input";
+    };
 		light           =
     {	
       {

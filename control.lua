@@ -55,6 +55,7 @@ script.on_event(defines.events.on_player_rotated_entity,
   end)
 
 script.on_init(Bot.OnInitialize)
+script.on_load(Bot.OnLoad)
 script.on_event(defines.events.on_tick, Bot.OnTick)
 
 script.on_event("bot-readout",

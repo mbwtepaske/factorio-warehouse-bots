@@ -5,76 +5,15 @@ local Entity = require("stdlib.entity.entity")
 local Time = require("stdlib.time")
 
 Bot = 
-{
-  Mode = 
-  {
-    Waiting     = 0;
-    Following   = 1;
-    Acting      = 2;
-  };
-  ActingMode    =
-  {
-    DropOff     = 1;
-    PickUp      = 2;
-  };
-  WaitingMode   = 
-  {
-    Order       = 0;
-    Recharge    = 1;
-  };
-  
+{  
   Names =
   {
     "warehouse-bot"
   };
-}
-
-function CreateState(entity)
-  return
+  Cache =
   {
-    Orientation = entity.orientation;
-    Position    = entity.position;
-    Speed       = entity.speed;
   }
-end
-
-function UpdateEnergy(entity)
-  if entity.Tick % 90 == 0 then
-  --  game.print(string.format("UpdateEnergy(%i): Entity = '%3f' (%3f)", entity.unit_number or -1, entity.energy, energy))  
-  end
-  
-  entity.Entity.energy = 6
-  entity.energy = 10
-end
-
-function UpdateStates(entity)
-  entity.Previous = entity.Current
-  entity.Current  = CreateState(entity)
-  entity.Tick = entity.Tick + 1
-  
-end
-
-function Bot.Create(entity)  
-  if Bot.IsWarehouseBot(entity) then
-    return setmetatable(
-    {
-      Entity      = entity;
-      Current     = CreateState(entity);
-      Previous    = CreateState(entity);
-      Target      = CreateState(entity);
-      Tick        = 42;
-    }, { __index = entity })    
-  end
-  
-  game.print(string.format("Bot.Create(%i) failed! Entity = '%s' (%s)", entity.unit_number or -1, entity.name, entity.type))
-  
-  return entity
-end
-
-function Bot.Destroy(entity)
-  if Bot.IsWarehouseBot(entity) then
-  end
-end
+}
 
 function Bot.IsWarehouseBot(entity)  
   for _, name in ipairs(Bot.Names) do
@@ -100,8 +39,7 @@ function Bot.Readout(entity)
   
   local front_tile = entity.surface.get_tile(front_position)
   
-  game.print(string.format("Tick: %i\tTile (Current): %s\tTile (Front): %s\tPosition (Current / Next): [%.2f, %.2f]/[%.2f, %.2f]\tDirection: %.3f\nSpeed: %.1f KM/h\tEnergy: %.1f"
-    , entity.Tick
+  game.print(string.format("Tile (Current): %s\tTile (Front): %s\tPosition (Current / Next): [%.2f, %.2f]/[%.2f, %.2f]\tDirection: %.3f\nSpeed: %.1f m/s\tBattery: %i %%"
     , tile.prototype.name
     , front_tile.prototype.name
     , entity.position.x
@@ -109,8 +47,8 @@ function Bot.Readout(entity)
     , front_position.x
     , front_position.y
     , entity.orientation
-    , entity.speed * 216
-    , entity.energy
+    , entity.speed  * 60
+    , (entity.grid.available_in_batteries / entity.grid.battery_capacity) * 100
     ))
 end
 
@@ -121,15 +59,43 @@ function Bot.Update(entity)
   elseif  entity.speed < 0 then sign = -1
   end
   
-  entity.speed  = math.min(math.abs(entity.speed), 40.0 / 206.0) * sign
+  entity.speed  = math.min(math.abs(entity.speed), 10.0 / 60.0) * sign
   
-  UpdateEnergy(entity)
-  UpdateStates(entity)
+  Bot.UpdateEnergy(entity)
+  Bot.UpdateStates(entity)
+end
+
+function Bot.UpdateEnergy(entity)
+  local grid        = entity.grid
+  local available   = grid.available_in_batteries
+  local consumption = entity.prototype.consumption
+  local difference  = consumption - entity.energy
+  
+  for index = #grid.equipment, 1, -1 do
+    local equipment = grid.equipment[index]
+    
+    if difference > 0 and equipment.energy > 0 then
+      local drain = math.min(equipment.energy, difference)
+    
+      equipment.energy  = equipment.energy - drain
+      entity.energy     = entity.energy + drain
+      difference        = difference - drain
+    end
+  end
+end
+
+function Bot.UpdateStates(entity)
 end
 
 function Bot.OnBuildEntity(entity, instigator)
   if Bot.IsWarehouseBot(entity) then
-    global.BotList[entity.unit_number] = Bot.Create(entity)
+    global.BotList[entity.unit_number] = entity
+    
+    if entity.valid and entity.grid and #entity.grid.equipment == 0 then
+      local battery = entity.grid.put { name = "warehouse-bot-battery"; position = { x; 0 } }
+      
+      battery.energy = battery.max_energy * 0.8
+    end
   end
 end
 
@@ -144,6 +110,9 @@ function Bot.OnInitialize()
 	global.BotList = global.BotList or {}
 end
 
+function Bot.OnLoad()
+end
+
 function Bot.OnReadout(entity)    
   if entity and Bot.IsWarehouseBot(entity) then
     Bot.Readout(global.BotList[entity.unit_number])
@@ -153,7 +122,10 @@ function Bot.OnReadout(entity)
 end
 
 function Bot.OnTick()
-  for unit_number, entity in pairs(global.BotList) do
-    Bot.Update(entity)
+  for _, entity in pairs(global.BotList) do
+    if entity.valid then
+      Bot.Update(entity)
+    else
+    end
   end
 end

@@ -3,8 +3,8 @@ data:extend
   {
     type                  = "equipment-grid";
     name                  = "warehouse-bot-grid";
-    width                 = 8;
-    height                = 2;
+    width                 = 2;
+    height                = 4;
     equipment_categories  = { "warehouse-bot-equipment" }
   };
   {
@@ -14,16 +14,16 @@ data:extend
     energy_source =
     {
       type              = "electric";
-      buffer_capacity   = 60 * 2 .. "MW";
-      input_flow_limit  = 60 * 1 .. "MW";
-      output_flow_limit = 60 * 0 .. "W";
-      usage_priority    = "primary-input"
+      buffer_capacity   = 18 .. "MJ";
+      input_flow_limit  = 50 .. "KW";
+      output_flow_limit = 50 .. "KW";
+      usage_priority    = "primary-output"
     };
     shape =
     {
       type    = "full";
-      width   = 1;
-      height  = 2;
+      width   = 2;
+      height  = 4;
     };
     sprite =
     {
