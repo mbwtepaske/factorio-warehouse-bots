@@ -40,7 +40,7 @@ script.on_event(defines.events.on_entity_died,
 script.on_event(defines.events.on_preplayer_mined_item,
   function(event)
     Bot.OnDestroyEntity(event.entity, game.players[event.player_index])
-    Tile.OnDestroyEntity(event.entity, event.cause or event.last_user)
+    Tile.OnDestroyEntity(event.entity, game.players[event.player_index])
   end)
   
 script.on_event(defines.events.on_robot_pre_mined,
@@ -55,7 +55,9 @@ script.on_event(defines.events.on_player_rotated_entity,
   end)
 
 script.on_init(Bot.OnInitialize)
+script.on_init(Tile.OnInitialize)
 script.on_load(Bot.OnLoad)
+script.on_load(Tile.OnLoad)
 script.on_event(defines.events.on_tick, Bot.OnTick)
 
 script.on_event("bot-readout",

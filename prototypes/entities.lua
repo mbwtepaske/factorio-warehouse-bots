@@ -77,7 +77,7 @@ data:extend
 		friction        = 2E-3;
     render_layer    = "higher-object-above";
 		rotation_speed  = 1 / 60.0;
-		weight          = 50;
+		weight          = 5E1;
     tank_driving    = true; -- allow turning while standing still
     guns            = {};
 		burner          = 
@@ -89,7 +89,7 @@ data:extend
       --effectivity               = 1;
       emissions                 = 0;
       fuel_inventory_size       = 0;
-      render_no_power_icon      = true;
+      render_no_power_icon      = false;
       render_no_network_icon    = false;
       resting_consumption_ratio = 0;
       --usage_priority            = "primary-input";

@@ -1,26 +1,37 @@
-Tile = {}
+local Position = require('stdlib/area/position')
+
+Tile =
+{
+}
 Tile.DirectionTile       = "warehouse-direction-tile";
 Tile.DirectionTileGhost  = Tile.DirectionTile .. "-ghost";
 
+function Tile.GetDirection(entity)
+  local tile = entity.surface.get_tile(entity.position)
+  
+  --if tile
+end
+
 function Tile.OnBuildEntity(entity, instigator)
-  if entity.name == DirectionTile or entity.name == DirectionTileGhost then    
-    local old_entity = entity
-    
-    entity = entity.surface.create_entity
-    { 
-      name          = DirectionTileGhost;
-      direction     = entity.direction;
-      fast_replace  = true;
-      force         = "player";
-      position      = entity.position;
-      operable      = false;
-      spill         = false;
-    }
+  if entity.name == Tile.DirectionTile or entity.name == Tile.DirectionTileGhost then    
+    --local old_entity = entity
+    --
+    --entity = entity.surface.create_entity
+    --{ 
+    --  name          = Tile.DirectionTileGhost;
+    --  direction     = entity.direction;
+    --  fast_replace  = true;
+    --  force         = "player";
+    --  position      = entity.position;
+    --  operable      = false;
+    --  spill         = false;
+    --}
     entity.operable = false
     
-    old_entity.destroy()
+    --old_entity.destroy()
     
-    PlaceWarehouseTile(entity, instigator)
+    --PlaceWarehouseTile(entity, instigator)
+    
   end
 end
 
@@ -47,24 +58,31 @@ function Tile.OnBuildTile(positions, instigator)
   end
   
   for index, entity in ipairs(instigator.surface.find_entities(area)) do
-    if entity.name == DirectionTile then
-      PlaceWarehouseTile(entity, instigator)
+    if entity.name == Tile.DirectionTileGhost then
+      --PlaceWarehouseTile(entity, instigator)
     end
   end 
 end
 
 function Tile.OnDestroyEntity(entity, instigator)
-  if entity.name == DirectionTileGhost then
-    instigator.mine_tile(entity.surface.get_tile(entity.position.x, entity.position.y))
+  if entity.name == Tile.DirectionTile or entity.name == Tile.DirectionTileGhost then
+    --instigator.mine_tile(entity.surface.get_tile(entity.position.x, entity.position.y))
+    
   end
 end
 
+function Tile.OnInitialize()
+end
+
+function Tile.OnLoad()
+end
+
 function Tile.OnRotateEntity(entity, instigator)
-  if entity.name == DirectionTileGhost then
+  if entity.name == Tile.DirectionTileGhost then
     entity.surface.set_tiles(
     {
       { 
-        name = DirectionTile .. "-" .. string.lower(game.direction_to_string(entity.direction));
+        name = Tile.DirectionTile .. "-" .. string.lower(game.direction_to_string(entity.direction));
         position = entity.position;
       } 
     }, false)
@@ -81,8 +99,8 @@ function Tile.PlaceWarehouseTile(entity, instigator)
   instigator.surface.set_tiles(
   { 
     { 
-        name = DirectionTile .. "-" .. string.lower(game.direction_to_string(entity.direction));
-      position = entity.position
+      name      = Tile.DirectionTile .. "-" .. string.lower(game.direction_to_string(entity.direction));
+      position  = entity.position
     }
   }, false)
 end
