@@ -1,5 +1,3 @@
-require("stdlib.table")
-
 local function get_direction_tile_sprite(offsetX, offsetY)
   return 
   {
@@ -71,13 +69,13 @@ data:extend
 		resistances     =	{ {	type = "impact",	percent = 100	}	};
 		collision_box   = { {-0.25, -0.25}, {0.25, 0.25} };
 		selection_box   = { {-0.50, -0.50}, {0.50, 0.50} };
-		effectivity     = 1;
-		consumption     =  9 .. "KW";
-		braking_power   = 18 .. "KW";
-		friction        = 2E-3;
+		effectivity     = 0.8;
+		consumption     = 10 .. "KW";
+		braking_power   = 20 .. "KW";
+		friction        = 5E-3;
     render_layer    = "higher-object-above";
-		rotation_speed  = 1 / 60.0;
-		weight          = 5E1;
+		rotation_speed  = 0.015;
+		weight          = 1E1;
     tank_driving    = true; -- allow turning while standing still
     guns            = {};
 		burner          = 

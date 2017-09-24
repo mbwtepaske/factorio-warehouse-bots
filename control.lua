@@ -66,5 +66,6 @@ script.on_event("bot-readout",
 
     if player.selected then
       Bot.OnReadout(player.selected)
+      --Bot.StopProcedure(player.selected)
     end
   end)

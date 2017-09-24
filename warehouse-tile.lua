@@ -1,4 +1,4 @@
-local Position = require('stdlib/area/position')
+local Position = require("stdlib/area/position")
 
 Tile =
 {
@@ -26,12 +26,9 @@ function Tile.OnBuildEntity(entity, instigator)
     --  operable      = false;
     --  spill         = false;
     --}
-    entity.operable = false
-    
     --old_entity.destroy()
-    
+    entity.operable = false
     --PlaceWarehouseTile(entity, instigator)
-    
   end
 end
 
@@ -66,8 +63,7 @@ end
 
 function Tile.OnDestroyEntity(entity, instigator)
   if entity.name == Tile.DirectionTile or entity.name == Tile.DirectionTileGhost then
-    --instigator.mine_tile(entity.surface.get_tile(entity.position.x, entity.position.y))
-    
+    --instigator.mine_tile(entity.surface.get_tile(entity.position.x, entity.position.y))    
   end
 end
 

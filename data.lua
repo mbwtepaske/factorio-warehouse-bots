@@ -1,11 +1,12 @@
-require("config")
+require("stdlib/utils/table")
 
-require("prototypes.categories")
-require("prototypes.entities")
-require("prototypes.equipment")
-require("prototypes.items")
-require("prototypes.recipes")
-require("prototypes.tiles")
+require("config")
+require("prototypes/categories")
+require("prototypes/entities")
+require("prototypes/equipment")
+require("prototypes/items")
+require("prototypes/recipes")
+require("prototypes/tiles")
 
 data:extend
 {

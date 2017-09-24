@@ -1,5 +1,3 @@
-require("stdlib.table")
-
 local function create_recipe(name, recipe)
   return table.merge(
   {
